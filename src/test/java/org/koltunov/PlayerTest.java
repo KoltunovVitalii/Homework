@@ -15,10 +15,10 @@ public class PlayerTest {
     @Test
     public void testAuthenticate() {
         // Тест на успешную аутентификацию
-        assertTrue(testPlayer.authenticate("password"));
+        assertTrue(testPlayer.authorization("password"));
 
         // Тест на неуспешную аутентификацию с неправильным паролем
-        assertFalse(testPlayer.authenticate("wrongPassword"));
+        assertFalse(testPlayer.authorization("wrongPassword"));
     }
 
     @Test

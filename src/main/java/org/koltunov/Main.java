@@ -3,6 +3,12 @@ package org.koltunov;
 import java.util.Scanner;
 
 public class Main {
+
+    /**
+     * Создает экземпляр TransactionService и обрабатывает пользовательские действия через консольный интерфейс.
+     *
+     * @param args аргументы командной строки (не используются)
+     */
     public static void main(String[] args) {
         TransactionService transactionService = new TransactionService();
         Scanner scanner = new Scanner(System.in);
