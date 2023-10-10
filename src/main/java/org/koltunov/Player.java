@@ -87,7 +87,7 @@ public class Player {
      * @return true, если списание успешно; в противном случае - false
      */
     public boolean debit(double amount, String transactionId) {
-        if (balance - amount >= 0 && !transactionIds.contains(transactionId)) {
+        if (balance - amount >= 0 && !transactionIds.contains(transactionId) && amount > 0) {
             balance -= amount;
             transactionHistory.add("Дебет/снятие: " + amount + " руб.");
             transactionIds.add(transactionId);
@@ -104,7 +104,7 @@ public class Player {
      * @return true, если пополнение успешно; в противном случае - false
      */
     public boolean credit(double amount, String transactionId) {
-        if (!transactionIds.contains(transactionId) && amount >= 0) {
+        if (!transactionIds.contains(transactionId) && amount > 0) {
             balance += amount;
             transactionHistory.add("Кредит/пополнение: " + amount + " руб.");
             transactionIds.add(transactionId);
