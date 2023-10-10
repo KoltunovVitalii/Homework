@@ -82,7 +82,7 @@ public class TransactionService {
 //            viewBalance(player);
         } else {
             System.out.println("Дебет/Списание не произведено. " +
-                    "Недостаточный баланс или повторяющийся идентификатор транзакции.");
+                    "Недостаточный баланс, повторяющийся идентификатор транзакции или не верная сумма.");
             player.audit("Отказ в списании " + amount + " руб.");
         }
         return success;
@@ -103,7 +103,7 @@ public class TransactionService {
 //            viewBalance(player);
         } else {
             System.out.println("Кредит/Пополнение не произведено. " +
-                    "Повторяющийся идентификатор транзакции.");
+                    "Повторяющийся идентификатор транзакции или не верная сумма.");
             player.audit("Отказ в пополнении " + amount + " руб.");
         }
         return success;
