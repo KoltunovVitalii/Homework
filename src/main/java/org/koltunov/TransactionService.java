@@ -79,7 +79,6 @@ public class TransactionService {
         boolean success = player.debit(amount, transactionId);
         if (success) {
             System.out.println("Дебет/Списание на " + amount + " руб. произведено успешно");
-//            viewBalance(player);
         } else {
             System.out.println("Дебет/Списание не произведено. " +
                     "Недостаточный баланс, повторяющийся идентификатор транзакции или не верная сумма.");
