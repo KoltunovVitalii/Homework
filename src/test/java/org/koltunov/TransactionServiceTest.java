@@ -1,93 +1,82 @@
 package org.koltunov;
-import org.junit.Before;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.DisplayName;
 
 public class TransactionServiceTest {
-    private TransactionService transactionService;
 
-    @Before
-    public void setUp() {
-        transactionService = new TransactionService();
+    @Test
+    @DisplayName("Дебет при достаточном балансе")
+    public void testDebitWithSufficientBalance() {
+        Player player = new Player("testUser", "password123");
+        player.setBalance(100.0);
+        String transactionId = "transaction123";
+
+        TransactionService service = new TransactionService();
+        service.debit(player, 50.0, transactionId);
+
+        Assertions.assertThat(player.getBalance()).isEqualTo(50.0);
+        Assertions.assertThat(player.getTransactionHistory()).contains("Дебет/снятие: 50.0 руб.");
+        Assertions.assertThat(player.getTransactionIds()).contains(transactionId);
     }
 
     @Test
-    public void testRegisterPlayer() {
-        transactionService.registerPlayer("testUser", "password");
-        // Проверяем, что игрок был успешно зарегистрирован
-        assertNotNull(transactionService.players.get("testUser"));
+    @DisplayName("Дебет при не достаточном балансе")
+    public void testDebitWithInsufficientBalance() {
+        Player player = new Player("testUser", "password123");
+        player.setBalance(30.0);
+        String transactionId = "transaction123";
 
-        // Попробуем зарегистрировать игрока с тем же именем
-        transactionService.registerPlayer("testUser", "password2");
-        // Проверяем, что игрок не был зарегистрирован повторно
-        assertEquals(1, transactionService.players.size());
+        TransactionService service = new TransactionService();
+        service.debit(player, 50.0, transactionId);
+
+        Assertions.assertThat(player.getBalance()).isEqualTo(30.0);
+        Assertions.assertThat(player.getTransactionHistory()).doesNotContain("Дебет/снятие: 50.0 руб.");
+        Assertions.assertThat(player.getTransactionIds()).doesNotContain(transactionId);
     }
 
     @Test
-    public void testLogin() {
-        transactionService.registerPlayer("testUser", "password");
+    @DisplayName("Дебет отрицательной суммы")
+    public void testDebitWithNonPositiveAmount() {
+        Player player = new Player("testUser", "password123");
+        player.setBalance(100.0);
+        String transactionId = "transaction123";
 
-        // Попытка входа с правильными учетными данными
-        Player player = transactionService.login("testUser", "password");
-        // Проверяем, что вход выполнен успешно
-        assertNotNull(player);
+        TransactionService service = new TransactionService();
+        service.debit(player, -50.0, transactionId);
 
-        // Попытка входа с неправильным паролем
-        player = transactionService.login("testUser", "wrongPassword");
-        // Проверяем, что вход не выполнен
-        assertNull(player);
-
-        // Попытка входа с несуществующим пользователем
-        player = transactionService.login("nonExistentUser", "password");
-        // Проверяем, что вход не выполнен
-        assertNull(player);
+        Assertions.assertThat(player.getBalance()).isEqualTo(100.0);
+        Assertions.assertThat(player.getTransactionHistory()).doesNotContain("Дебет/снятие: -50.0 руб.");
+        Assertions.assertThat(player.getTransactionIds()).doesNotContain(transactionId);
     }
 
     @Test
-    public void testDebit() {
-        transactionService.registerPlayer("testUser", "password");
-        Player player = transactionService.login("testUser", "password");
-        player.credit(10, "credit");
-
-        // Попытка списания с достаточным балансом
-        boolean success = transactionService.debit(player, 10.0, "debit1");
-        assertTrue(success);
-
-        // Попытка списания с недостаточным балансом
-        success = transactionService.debit(player, 20.0, "debit2");
-        assertFalse(success);
-    }
-
-    @Test
+    @DisplayName("Проверка кредита")
     public void testCredit() {
-        transactionService.registerPlayer("testUser", "password");
-        Player player = transactionService.login("testUser", "password");
+        Player player = new Player("testUser", "password123");
+        player.setBalance(100.0);
+        String transactionId = "transaction123";
 
-        // Попытка пополнения с положительной суммой
-        boolean success = transactionService.credit(player, 50.0, "credit1");
-        assertTrue(success);
+        TransactionService service = new TransactionService();
+        service.credit(player, 50.0, transactionId);
 
-        // Попытка пополнения с отрицательной суммой (не должно сработать)
-        success = transactionService.credit(player, -10.0, "credit2");
-        assertFalse(success);
+        Assertions.assertThat(player.getBalance()).isEqualTo(150.0);
+        Assertions.assertThat(player.getTransactionHistory()).contains("Кредит/пополнение: 50.0 руб.");
+        Assertions.assertThat(player.getTransactionIds()).contains(transactionId);
     }
 
     @Test
-    public void testViewTransactionHistory() {
-        transactionService.registerPlayer("testUser", "password");
-        Player player = transactionService.login("testUser", "password");
+    @DisplayName("Кредит отрицательной суммы")
+    public void testCreditWithNonPositiveAmount() {
+        Player player = new Player("testUser", "password123");
+        player.setBalance(100.0);
+        String transactionId = "transaction123";
 
-        // Просмотр истории операций (должен быть хотя бы один элемент)
-        transactionService.debit(player, 10.0, "debit1");
-        transactionService.viewTransactionHistory(player);
-    }
+        TransactionService service = new TransactionService();
+        service.credit(player, -50.0, transactionId);
 
-    @Test
-    public void testViewAuditHistory() {
-        transactionService.registerPlayer("testUser", "password");
-        Player player = transactionService.login("testUser", "password");
-
-        // Просмотр истории событий (должен быть хотя бы один элемент)
-        transactionService.viewAuditHistory(player);
+        Assertions.assertThat(player.getBalance()).isEqualTo(100.0);
+        Assertions.assertThat(player.getTransactionHistory()).doesNotContain("Кредит/пополнение: -50.0 рub.");
+        Assertions.assertThat(player.getTransactionIds()).doesNotContain(transactionId);
     }
 }

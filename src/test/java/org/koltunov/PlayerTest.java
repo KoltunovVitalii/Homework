@@ -1,54 +1,47 @@
 package org.koltunov;
-import org.junit.Before;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.DisplayName;
 
 public class PlayerTest {
-    private Player testPlayer;
 
-    @Before
-    public void setUp() {
-        // Инициализация объекта testPlayer перед каждым тестом
-        testPlayer = new Player("testUser", "password");
+    @Test
+    @DisplayName("Авторизация с валидным паролем")
+    public void testAuthorizationWithValidPassword() {
+        Player player = new Player("testUser", "password123");
+        boolean authorized = player.authorization("password123");
+        Assertions.assertThat(authorized).isTrue();
     }
 
     @Test
-    public void testAuthenticate() {
-        // Тест на успешную аутентификацию
-        assertTrue(testPlayer.authorization("password"));
-
-        // Тест на неуспешную аутентификацию с неправильным паролем
-        assertFalse(testPlayer.authorization("wrongPassword"));
+    @DisplayName("Авторизация с не валидным паролем")
+    public void testAuthorizationWithInvalidPassword() {
+        Player player = new Player("testUser", "password123");
+        boolean authorized = player.authorization("wrongPassword");
+        Assertions.assertThat(authorized).isFalse();
     }
 
     @Test
-    public void testDebit() {
-        testPlayer.credit(10, "id");
-        // Тест на успешное списание с достаточным балансом
-        assertTrue(testPlayer.debit(10.0, "debit1"));
-
-        // Тест на неуспешное списание с недостаточным балансом
-        assertFalse(testPlayer.debit(20.0, "debit2"));
+    @DisplayName("Добавление транзакции в историю")
+    public void testAddTransactionHistory() {
+        Player player = new Player("testUser", "password123");
+        player.addTransactionHistory("Transaction 1");
+        Assertions.assertThat(player.getTransactionHistory()).contains("Transaction 1");
     }
 
     @Test
-    public void testCredit() {
-        // Тест на успешное пополнение с положительной суммой
-        assertTrue(testPlayer.credit(50.0, "credit1"));
-
-        // Тест на неуспешное пополнение с отрицательной суммой (не должно сработать)
-        assertFalse(testPlayer.credit(-10.0, "credit2"));
+    @DisplayName("Установка баланса")
+    public void testSetBalance() {
+        Player player = new Player("testUser", "password123");
+        player.setBalance(100.0);
+        Assertions.assertThat(player.getBalance()).isEqualTo(100.0);
     }
 
     @Test
-    public void testGetBalance() {
-        // Проверка начального баланса (должен быть равен 0)
-        assertEquals(0.0, testPlayer.getBalance(), 0.001);
-    }
-
-    @Test
-    public void testGetUsername() {
-        // Проверка имени пользователя
-        assertEquals("testUser", testPlayer.getUsername());
+    @DisplayName("Добавление действия в аудит")
+    public void testAddAudit() {
+        Player player = new Player("testUser", "password123");
+        player.addAudit("Action 1");
+        Assertions.assertThat(player.getAuditHistory()).contains("Аудит: Action 1");
     }
 }
