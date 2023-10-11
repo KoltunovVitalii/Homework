@@ -1,5 +1,6 @@
 package org.koltunov;
 
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Main {
@@ -11,6 +12,8 @@ public class Main {
      */
     public static void main(String[] args) {
         TransactionService transactionService = new TransactionService();
+        HistoryService historyService = new HistoryService();
+        AuthorizationService authorizationService = new AuthorizationService(new HashMap<>());
         Scanner scanner = new Scanner(System.in);
         Player currentUser = null;
 
@@ -35,7 +38,7 @@ public class Main {
                     String regUsername = scanner.nextLine();
                     System.out.print("Введите пароль: ");
                     String regPassword = scanner.nextLine();
-                    transactionService.registerPlayer(regUsername, regPassword);
+                    authorizationService.registerPlayer(regUsername, regPassword);
                     break;
                 case 2:
                     if (currentUser == null) {
@@ -43,7 +46,7 @@ public class Main {
                         String loginUsername = scanner.nextLine();
                         System.out.print("Введите пароль: ");
                         String loginPassword = scanner.nextLine();
-                        currentUser = transactionService.login(loginUsername, loginPassword);
+                        currentUser = authorizationService.login(loginUsername, loginPassword);
                     } else {
                         System.out.println("Выйдите из системы чтобы авторизоваться другим игроком");
                     }
@@ -81,21 +84,21 @@ public class Main {
                     break;
                 case 6:
                     if (currentUser != null) {
-                        transactionService.viewTransactionHistory(currentUser);
+                        historyService.viewTransactionHistory(currentUser);
                     } else {
                         System.out.println("Для выполнения данного действия необходима авторизация");
                     }
                     break;
                 case 7:
                     if (currentUser != null) {
-                        transactionService.viewAuditHistory(currentUser);
+                        historyService.viewAuditHistory(currentUser);
                     } else {
                         System.out.println("Для выполнения данного действия необходима авторизация");
                     }
                     break;
                 case 8:
                     if (currentUser != null) {
-                        currentUser.audit("Выход из системы");
+                        currentUser.addAudit("Выход из системы");
                         currentUser = null;
                         System.out.println("Выход из системы выполнен успешно");
                     } else {

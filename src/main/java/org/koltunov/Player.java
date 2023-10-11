@@ -33,6 +33,30 @@ public class Player {
         this.transactionIds = new HashSet<>();
     }
 
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public void setTransactionHistory(List<String> transactionHistory) {
+        this.transactionHistory = transactionHistory;
+    }
+
+    public void setAuditHistory(List<String> auditHistory) {
+        this.auditHistory = auditHistory;
+    }
+
+    public void addTransactionHistory(String tH) {
+        transactionHistory.add(tH);
+    }
+
+    public void addTransactionIds(String tIds) {
+        transactionIds.add(tIds);
+    }
+
+    public Set<String> getTransactionIds() {
+        return transactionIds;
+    }
+
     /**
      * Возвращает имя игрока.
      *
@@ -40,6 +64,16 @@ public class Player {
      */
     public String getUsername() {
         return username;
+    }
+
+    /**
+     * Возвращает текущий пароль игрока.
+     *
+     * @return текущий пароль игрока
+     */
+
+    public String getPassword() {
+        return password;
     }
 
     /**
@@ -80,45 +114,12 @@ public class Player {
     }
 
     /**
-     * Выполняет дебет/списание средств с баланса игрока.
-     *
-     * @param amount       сумма для списания
-     * @param transactionId уникальный идентификатор транзакции
-     * @return true, если списание успешно; в противном случае - false
-     */
-    public boolean debit(double amount, String transactionId) {
-        if (balance - amount >= 0 && !transactionIds.contains(transactionId) && amount > 0) {
-            balance -= amount;
-            transactionHistory.add("Дебет/снятие: " + amount + " руб.");
-            transactionIds.add(transactionId);
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Выполняет кредит/пополнение баланса игрока.
-     *
-     * @param amount       сумма для пополнения
-     * @param transactionId уникальный идентификатор транзакции
-     * @return true, если пополнение успешно; в противном случае - false
-     */
-    public boolean credit(double amount, String transactionId) {
-        if (!transactionIds.contains(transactionId) && amount > 0) {
-            balance += amount;
-            transactionHistory.add("Кредит/пополнение: " + amount + " руб.");
-            transactionIds.add(transactionId);
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Добавляет запись об аудите действия игрока.
      *
      * @param action действие, для которого записывается аудит
      */
-    public void audit(String action) {
+    public void addAudit(String action) {
         auditHistory.add("Аудит: " + action);
     }
+
 }
