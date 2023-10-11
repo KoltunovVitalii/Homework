@@ -33,26 +33,56 @@ public class Player {
         this.transactionIds = new HashSet<>();
     }
 
+    /**
+     * Устанавливает текущий баланс игрока.
+     *
+     * @param balance новый баланс игрока
+     */
     public void setBalance(double balance) {
         this.balance = balance;
     }
 
+    /**
+     * Устанавливает историю транзакций игрока.
+     *
+     * @param transactionHistory новая история транзакций
+     */
     public void setTransactionHistory(List<String> transactionHistory) {
         this.transactionHistory = transactionHistory;
     }
 
+    /**
+     * Устанавливает историю аудита действий игрока.
+     *
+     * @param auditHistory новая история аудита
+     */
     public void setAuditHistory(List<String> auditHistory) {
         this.auditHistory = auditHistory;
     }
 
+    /**
+     * Добавляет запись в историю транзакций игрока.
+     *
+     * @param tH запись о транзакции
+     */
     public void addTransactionHistory(String tH) {
         transactionHistory.add(tH);
     }
 
+    /**
+     * Добавляет уникальный идентификатор транзакции в множество транзакций игрока.
+     *
+     * @param tIds уникальный идентификатор транзакции
+     */
     public void addTransactionIds(String tIds) {
         transactionIds.add(tIds);
     }
 
+    /**
+     * Возвращает множество уникальных идентификаторов транзакций игрока.
+     *
+     * @return множество уникальных идентификаторов транзакций
+     */
     public Set<String> getTransactionIds() {
         return transactionIds;
     }
